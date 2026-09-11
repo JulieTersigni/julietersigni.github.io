@@ -1,0 +1,42 @@
+# ==========================================================================
+# Build inputs — NEVER publish these.
+#
+# src/ holds the plaintext case study markup and the original Amazon and
+# Mastercard design mocks. If these were committed the password protection
+# would be pointless: anyone could read the content in the repository or fetch
+# the images by URL.
+#
+# The published case-studies/*.html files contain AES-GCM ciphertext only.
+# ==========================================================================
+src/
+
+# The case study password.
+tools/.password
+pw.txt
+
+# Anything else that looks like a credential note, wherever it lives.
+*password*.txt
+*passwords*.txt
+*secret*.txt
+*credentials*.txt
+.env
+.env.*
+
+# Packaging output — regenerate with `node tools/package.mjs`.
+dist/
+dist.zip
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# Stray tool artifacts
+.Rhistory
+.Rproj.user/
+
+# Editors
+.vscode/
+.idea/
+*.swp

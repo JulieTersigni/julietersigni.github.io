@@ -1,0 +1,556 @@
+/* ==========================================================================
+   case-study.css — the password gate and the decrypted long-form layout
+   --------------------------------------------------------------------------
+   Everything below `.cs-wrap` is injected by case-study.js after successful
+   AES-GCM decryption, so these rules have to be present before the content
+   exists. Nothing here is content-specific.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Gate
+   -------------------------------------------------------------------------- */
+.gate {
+  display: grid;
+  place-items: center;
+  min-height: calc(100vh - var(--nav-h));
+  padding: clamp(2rem, 6vw, 5rem) var(--gutter);
+}
+
+.gate-card {
+  width: 100%;
+  max-width: 470px;
+  text-align: center;
+}
+
+.gate-lock {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+}
+.gate-lock svg { width: 25px; height: 25px; }
+
+.gate-eyebrow {
+  margin: 0 0 0.9rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.gate-title {
+  font-family: var(--font-display);
+  font-size: var(--step-4);
+  text-transform: uppercase;
+  line-height: 0.96;
+  margin-bottom: 1.1rem;
+}
+
+.gate-copy {
+  margin: 0 auto 2rem;
+  max-width: 40ch;
+  font-size: var(--step-0);
+  color: var(--ink-soft);
+}
+
+.gate-form { text-align: left; }
+.gate-form label {
+  display: block;
+  margin-bottom: 0.55rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.gate-input-wrap { position: relative; }
+
+.gate-input-wrap input {
+  width: 100%;
+  padding: 0.95rem 3.2rem 0.95rem 1rem;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--ink-faint);
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  letter-spacing: 0.02em;
+  transition: border-color 0.2s var(--ease);
+}
+.gate-input-wrap input:focus {
+  border-color: var(--ink);
+  outline: none;
+}
+
+.gate-reveal {
+  position: absolute;
+  top: 50%;
+  right: 0.5rem;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--ink-mute);
+  cursor: pointer;
+}
+.gate-reveal:hover { color: var(--ink); }
+.gate-reveal svg { width: 19px; height: 19px; }
+.gate-reveal .icon-hide { display: none; }
+.gate-reveal.is-shown .icon-show { display: none; }
+.gate-reveal.is-shown .icon-hide { display: block; }
+
+.gate-error {
+  min-height: 1.35em;
+  margin: 0.6rem 0 0;
+  font-size: var(--step--1);
+  color: var(--ink);
+  font-weight: 500;
+}
+.gate-error:not(:empty)::before { content: "— "; color: var(--ink-faint); }
+
+.gate-form .btn { width: 100%; margin-top: 1.1rem; }
+
+.gate-busy {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 1.1rem;
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.gate-busy.is-on { display: flex; }
+
+.spinner {
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid var(--rule);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.gate-help {
+  margin: 1.75rem 0 0;
+  font-size: var(--step--1);
+  color: var(--ink-mute);
+}
+.gate-help a { color: var(--ink); }
+
+@keyframes gate-shake {
+  10%, 90% { transform: translateX(-1px); }
+  20%, 80% { transform: translateX(2px); }
+  30%, 50%, 70% { transform: translateX(-4px); }
+  40%, 60% { transform: translateX(4px); }
+}
+.gate-shake { animation: gate-shake 0.5s var(--ease); }
+
+/* --------------------------------------------------------------------------
+   2. Decrypted wrapper
+   -------------------------------------------------------------------------- */
+.cs-wrap { display: none; }
+.cs-wrap.is-unlocked { display: block; }
+
+/* --------------------------------------------------------------------------
+   3. Case study header — an inverted title card, echoing the deck
+   -------------------------------------------------------------------------- */
+.cs-head {
+  padding: clamp(3rem, 8vw, 6.5rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+  background: var(--invert-bg);
+  color: var(--invert-ink);
+}
+.cs-head .cs-eyebrow {
+  margin: 0 0 1.4rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--invert-ink) 68%, transparent);
+}
+.cs-head h1 {
+  max-width: 22ch;
+  font-family: var(--font-display);
+  font-size: var(--step-5);
+  text-transform: uppercase;
+  line-height: 0.92;
+}
+.cs-lede {
+  max-width: 52ch;
+  margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+  font-size: var(--step-1);
+  font-weight: 300;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--invert-ink) 82%, transparent);
+}
+
+.cs-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+  gap: 1.6rem 2.25rem;
+  margin: clamp(2.25rem, 5vw, 3.5rem) 0 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid color-mix(in srgb, var(--invert-ink) 28%, transparent);
+}
+.cs-facts dt {
+  margin-bottom: 0.4rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--invert-ink) 68%, transparent);
+}
+.cs-facts dd { margin: 0; font-size: var(--step-0); }
+
+/* --------------------------------------------------------------------------
+   4. Confidentiality notice
+   -------------------------------------------------------------------------- */
+.cs-confidential {
+  display: flex;
+  gap: 0.85rem;
+  max-width: var(--measure);
+  margin: clamp(2.5rem, 5vw, 4rem) 0 0;
+  padding: 1.1rem 1.25rem;
+  border: 1px solid var(--rule);
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.cs-confidential svg { flex: 0 0 auto; width: 17px; height: 17px; margin-top: 0.15em; }
+
+/* --------------------------------------------------------------------------
+   5. Body rhythm
+   -------------------------------------------------------------------------- */
+.cs-body { padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(3rem, 7vw, 5.5rem); }
+
+.cs-block { padding: clamp(2.5rem, 5.5vw, 4.5rem) 0; }
+.cs-block + .cs-block { border-top: 1px solid var(--rule); }
+
+.cs-block > h2 {
+  margin-bottom: clamp(1.25rem, 2.5vw, 2rem);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.cs-prose { max-width: var(--measure); }
+.cs-prose > * + * { margin-top: 1.1em; }
+.cs-prose p { margin: 0; }
+.cs-emph {
+  font-size: var(--step-2);
+  font-weight: 300;
+  line-height: 1.34;
+  letter-spacing: -0.005em;
+}
+.cs-prose strong { font-weight: 500; }
+
+/* --------------------------------------------------------------------------
+   6. Initiative divider — for a case study covering two shipped efforts
+   -------------------------------------------------------------------------- */
+.cs-initiative {
+  padding: clamp(2.5rem, 6vw, 5rem) 0 0;
+  border-top: 2px solid var(--ink);
+}
+.cs-initiative-head { margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+.cs-initiative-num {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+  font-size: var(--step-2);
+  color: var(--ink-mute);
+}
+.cs-initiative-head h2 {
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  text-transform: uppercase;
+  line-height: 0.98;
+}
+.cs-initiative-head p {
+  max-width: 52ch;
+  margin: 1rem 0 0;
+  font-size: var(--step-1);
+  font-weight: 300;
+  color: var(--ink-soft);
+}
+
+/* --------------------------------------------------------------------------
+   7. Figures
+   -------------------------------------------------------------------------- */
+.cs-figure { margin: clamp(2rem, 4.5vw, 3.25rem) 0 0; }
+
+.cs-figure-label {
+  margin: 0 0 0.7rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+.cs-shot {
+  display: block;
+  width: 100%;
+  padding: 0;
+  background: var(--paper-2);
+  border: 1px solid var(--rule);
+  cursor: zoom-in;
+  overflow: hidden;
+}
+.cs-shot img {
+  width: 100%;
+  transition: transform 0.5s var(--ease);
+}
+.cs-shot:hover img { transform: scale(1.012); }
+
+.cs-figure figcaption {
+  max-width: var(--measure);
+  margin-top: 0.95rem;
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--ink-mute);
+}
+
+/* Side-by-side rationale: mock left, reasoning right — the deck's own layout */
+.cs-split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 3.25rem);
+  align-items: start;
+  margin: clamp(2rem, 4.5vw, 3.25rem) 0 0;
+}
+.cs-split .cs-figure { margin: 0; }
+.cs-rationale { position: sticky; top: calc(var(--nav-h) + 2rem); }
+.cs-rationale h3 {
+  margin-bottom: 0.9rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid var(--ink);
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cs-rationale p { margin: 0 0 0.9em; font-size: var(--step-0); color: var(--ink-soft); }
+.cs-rationale p:last-child { margin-bottom: 0; }
+
+@media (max-width: 860px) {
+  .cs-split { grid-template-columns: 1fr; }
+  .cs-rationale { position: static; }
+}
+
+/* Two or three mocks in a row */
+.cs-pair {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: clamp(1.25rem, 3vw, 2.25rem);
+  margin: clamp(2rem, 4.5vw, 3.25rem) 0 0;
+}
+.cs-pair .cs-figure { margin: 0; }
+
+/* Before / after — the label carries the argument, so it is not decorative */
+.cs-ba-label {
+  display: inline-block;
+  margin: 0 0 0.6rem;
+  padding: 0.28rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.cs-ba-label--before {
+  border: 1px solid var(--rule);
+  color: var(--ink-mute);
+}
+.cs-ba-label--after {
+  background: var(--ink);
+  color: var(--paper);
+}
+.cs-ba-note {
+  max-width: 40ch;
+  margin: 0.85rem 0 0;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Phone screenshots are small — cap them so they don't blow up on desktop */
+.cs-shot--phone { background: var(--paper-2); }
+.cs-shot--phone img { max-width: 340px; margin-inline: auto; }
+
+/* --------------------------------------------------------------------------
+   8. Lists — role, goals, impact
+   -------------------------------------------------------------------------- */
+.cs-list {
+  max-width: var(--measure);
+  list-style: none;
+}
+.cs-list li {
+  position: relative;
+  padding: 1.05rem 0 1.05rem 2.4rem;
+  border-bottom: 1px solid var(--rule-soft);
+  font-size: var(--step-0);
+}
+.cs-list li:first-child { border-top: 1px solid var(--rule-soft); }
+.cs-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.65em;
+  width: 1.3rem;
+  height: 1px;
+  background: var(--ink-faint);
+}
+.cs-list strong { font-weight: 500; }
+
+/* Impact figures set large — these are hers, from the deck */
+.cs-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  gap: clamp(1.5rem, 3.5vw, 2.75rem);
+  list-style: none;
+}
+.cs-metrics li { padding-top: 1.1rem; border-top: 1px solid var(--ink); }
+.cs-metrics .figure {
+  display: block;
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  line-height: 1;
+  margin-bottom: 0.5rem;
+}
+.cs-metrics .label { font-size: var(--step--1); line-height: 1.5; color: var(--ink-soft); }
+
+/* A note where numbers can't be published */
+.cs-metric-note {
+  max-width: var(--measure);
+  margin: 1.75rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+  font-size: var(--step--1);
+  color: var(--ink-mute);
+}
+
+/* --------------------------------------------------------------------------
+   9. Pull quote
+   -------------------------------------------------------------------------- */
+.cs-pull {
+  max-width: 30ch;
+  margin: clamp(2.5rem, 5vw, 4rem) 0;
+  font-family: var(--font-display);
+  font-size: var(--step-3);
+  text-transform: uppercase;
+  line-height: 1;
+}
+.cs-pull cite {
+  display: block;
+  margin-top: 1rem;
+  font-family: var(--font-body);
+  font-size: var(--step--1);
+  font-style: normal;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+
+/* --------------------------------------------------------------------------
+   10. In-progress placeholder (for case studies still being written)
+   -------------------------------------------------------------------------- */
+.cs-wip {
+  max-width: var(--measure);
+  margin: clamp(2rem, 4vw, 3rem) 0 0;
+  padding: clamp(1.5rem, 3vw, 2.25rem);
+  border: 1px solid var(--ink);
+}
+.cs-wip h2 {
+  margin-bottom: 0.9rem;
+  font-size: var(--step-1);
+}
+.cs-wip p { margin: 0 0 0.9em; color: var(--ink-soft); }
+.cs-wip p:last-child { margin-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   11. Prev / next
+   -------------------------------------------------------------------------- */
+.cs-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: clamp(2rem, 4vw, 3rem) 0;
+  border-top: 1px solid var(--ink);
+}
+.cs-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: var(--step--1);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-mute);
+  transition: color 0.2s var(--ease);
+}
+.cs-nav-link:hover { color: var(--ink); }
+.cs-nav-link svg { width: 17px; height: 17px; }
+.cs-nav-meta {
+  order: 3;
+  width: 100%;
+  font-size: var(--step--1);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  text-align: center;
+}
+@media (min-width: 680px) {
+  .cs-nav-meta { order: 0; width: auto; }
+}
+
+/* --------------------------------------------------------------------------
+   12. Lightbox
+   -------------------------------------------------------------------------- */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: none;
+  place-items: center;
+  padding: clamp(1rem, 4vw, 3rem);
+  background: rgba(6, 6, 6, 0.94);
+  cursor: zoom-out;
+}
+.lightbox.is-open { display: grid; }
+.lightbox img {
+  max-width: 100%;
+  max-height: 92vh;
+  width: auto;
+  object-fit: contain;
+}
+.lightbox-close {
+  position: absolute;
+  top: clamp(0.75rem, 2vw, 1.5rem);
+  right: clamp(0.75rem, 2vw, 1.5rem);
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.lightbox-close:hover { border-color: #fff; }

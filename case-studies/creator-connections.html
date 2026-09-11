@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Locked · Creator Connections — Julie Tersigni</title>
+<meta name="description" content="A password-protected content design case study by Julie Tersigni.">
+<meta name="robots" content="noindex, nofollow">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0b0b'/><text y='73' x='50' text-anchor='middle' font-size='58' font-family='Helvetica,Arial,sans-serif' font-weight='600' fill='%23fbfbfa'>JT</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../main.css">
+<link rel="stylesheet" href="../case-study.css">
+
+<script>
+  (function () {
+    try {
+      var saved = localStorage.getItem('jt-theme');
+      document.documentElement.setAttribute('data-theme',
+        saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+    } catch (e) {}
+  })();
+</script>
+</head>
+
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+
+<nav class="site-nav" id="siteNav">
+  <div class="nav-inner">
+    <a class="wordmark" href="../index.html">Julie Tersigni<span>,</span></a>
+
+    <a class="nav-back" href="../work.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg>
+      All work
+    </a>
+
+    <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4.2"/>
+        <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 14.5A8.5 8.5 0 019.5 4a7 7 0 108.9 10.4 8.6 8.6 0 011.6.1z"/>
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<main id="main">
+
+<!-- ==================================================================== -->
+<!-- LOCK GATE                                                            -->
+<!-- ==================================================================== -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-lock" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="10.5" width="16" height="10.5" rx="2"/>
+        <path d="M8 10.5V7a4 4 0 018 0v3.5"/>
+      </svg>
+    </div>
+
+    <p class="gate-eyebrow">Case study 01 · Protected</p>
+    <h1 class="gate-title">Creator Connections</h1>
+    <p class="gate-copy">
+      This case study contains unreleased and internal product design. It’s encrypted,
+      not just hidden — enter the password to decrypt and read it.
+    </p>
+
+    <noscript>
+      <p class="gate-error" style="text-align:center">
+        This case study is decrypted in your browser, so JavaScript needs to be enabled
+        to read it. Alternatively, email your-email@example.com for a PDF.
+      </p>
+    </noscript>
+
+    <form class="gate-form" id="gateForm" novalidate>
+      <label for="gatePassword">Password</label>
+      <div class="gate-input-wrap">
+        <input type="password" id="gatePassword" name="password" autocomplete="current-password"
+               autocapitalize="off" spellcheck="false" required>
+        <button class="gate-reveal" id="gateReveal" type="button" aria-label="Show password">
+          <svg class="icon-show" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/>
+          </svg>
+          <svg class="icon-hide" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 3l18 18M10.6 6.1A7.9 7.9 0 0112 6c6.4 0 10 6 10 6a18 18 0 01-2.6 3.4M6.6 8.6A18 18 0 002 12s3.6 6.5 10 6.5a8.6 8.6 0 003.3-.6"/>
+          </svg>
+        </button>
+      </div>
+      <p class="gate-error" id="gateError" role="alert"></p>
+      <button class="btn" type="submit">Unlock case study</button>
+      <div class="gate-busy" id="gateBusy" role="status">
+        <span class="spinner" aria-hidden="true"></span>
+        <span>Decrypting…</span>
+      </div>
+    </form>
+
+    <p class="gate-help">
+      Don’t have the password?
+      <a href="mailto:your-email@example.com?subject=Case%20study%20access%20request">Request access</a>
+      and I’ll send it over — usually the same day.
+    </p>
+  </div>
+</div>
+
+<!-- ==================================================================== -->
+<!-- DECRYPTED CONTENT MOUNTS HERE                                        -->
+<!-- ==================================================================== -->
+<div class="cs-wrap" id="csWrap">
+  <div id="csContent"></div>
+
+  <div class="container">
+    <nav class="cs-nav">
+      <a class="cs-nav-link cs-nav-link--prev" href="../work.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M11 18l-6-6 6-6"/></svg> All work</a>
+      <span class="cs-nav-meta">Case study 01 of 05</span>
+      <a class="cs-nav-link cs-nav-link--next" href="ads-agent.html">Ads Agent <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </nav>
+  </div>
+</div>
+
+</main>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Enlarged design artifact">
+  <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close">&times;</button>
+  <img id="lightboxImg" alt="">
+</div>
+
+<!-- AES-GCM ciphertext. Contains no plaintext content. -->
+<script type="application/json" id="csPayload">{"v":1,"alg":"AES-GCM","kdf":"PBKDF2-SHA256","iterations":250000,"salt":"1GpGJJKgNSw/AFSLT1RMGA==","iv":"0uOUoGVQ0wT8FnEf","ct":"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"}</script>
+
+<script src="../main.js"></script>
+<script src="../case-study.js"></script>
+</body>
+</html>

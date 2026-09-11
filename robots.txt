@@ -1,0 +1,7 @@
+# The public pages are fine to index. The case studies are not — they are
+# password protected and carry noindex, but list them here as well.
+User-agent: *
+Allow: /
+Disallow: /case-studies/
+
+Sitemap: https://julietersigni.github.io/sitemap.xml
