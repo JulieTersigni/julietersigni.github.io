@@ -473,16 +473,31 @@ button { font: inherit; color: inherit; }
   text-decoration: none;
 }
 
-/* Hover must not change the row's usable width. An earlier version added
-   padding-inline on hover, which narrowed the title column just enough that a
-   long title re-wrapped onto a second line — the row grew taller and every row
-   below it jumped. Underline only: text-decoration never affects layout.
-   Focus gets the same cue so keyboard users aren't left guessing. */
+/* The row nudges right on hover, but with transform rather than padding.
+   padding-inline narrowed the title column, and "Prime Video interactive ad
+   experiences" clears one line by only a few pixels — so it re-wrapped, the row
+   grew taller, and everything below jumped. A transform is painted, not laid
+   out: it cannot change where text wraps, however far it moves.
+   Focus gets the same treatment so keyboard users aren't left guessing. */
+.work-link {
+  transition: transform 0.25s var(--ease);
+}
+.work-link:hover,
+.work-link:focus-visible {
+  transform: translateX(0.5rem);
+}
 .work-link:hover .work-title,
 .work-link:focus-visible .work-title {
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 6px;
+}
+/* Coming-soon rows aren't links, so they shouldn't move. */
+.work-link--pending:hover { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .work-link:hover,
+  .work-link:focus-visible { transform: none; }
 }
 
 /* Coming-soon entries are divs, not links, so nothing implies a destination. */
