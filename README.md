@@ -9,55 +9,24 @@ JavaScript you can edit in any text editor.
 
 ---
 
-## Before you publish
+## Status
 
-Five things need your input. Everything else is finished.
+Live at **https://julietersigni.github.io** once Pages is switched on
+(Settings → Pages → Deploy from a branch → main → / (root)).
 
-| # | What | How |
-|---|------|-----|
-| 1 | **Your email address.** Every "email me" link is a dead placeholder until this is set. `node tools/package.mjs` refuses to build until it is. | `node tools/set-contact.mjs you@example.com` |
-| 2 | **Your GitHub username**, so the site URL is right in the canonical and social tags. Currently assumes `julietersigni`. The repository must be named exactly `<username>.github.io` — `404.html` uses root-absolute paths that break in a project subfolder. | `node tools/set-site-url.mjs https://<username>.github.io` |
-| 3 | **Your résumé PDF.** Drop it into `assets/` and rerun the build — the download button enables itself. | copy into `assets/`, then rebuild |
-| 4 | **Your About copy.** One short authored paragraph remains, marked. Everything else on the page is your own words or verifiable fact. | edit `about.html` |
-| 5 | **Your How I Work copy.** Four authored habits, marked. | edit `about.html` |
-| 6 | **Confirm the recommendations.** Three are excerpted from your public LinkedIn recommendations — say the word if you'd rather cut any or excerpt differently. | `about.html`, `index.html` |
+Everything is in place: Julie's copy, her real contact address, the résumé PDF, and the
+three completed case studies. Two projects — Creator Connections and Ads Agent — are
+listed on the Work page as coming-soon entries with no page behind them; their draft
+sources are parked in `src/case-studies/_pending/` and can be finished at any time
+without touching anything else.
 
-Items 1 and 2 are single commands because each value appears in several files —
-including `tools/template.html`, which is baked into all five case study gates.
-Editing one file by hand and missing the template is the easy mistake, so don't do
-it by hand.
-
-To find what's left:
+Optional, whenever she wants it: a custom domain. One command repoints the whole site —
 
 ```bash
-grep -rn "your-email@example.com" --include="*.html" .
-grep -rn "jt:copy-slot" --include="*.html" .
+node tools/set-site-url.mjs https://julietersigni.com
 ```
 
-The comment `<!-- jt:copy-slot -->` marks every passage I wrote. Your own words —
-transcribed verbatim from your slides and your LinkedIn profile — are **not**
-marked, so anything without that comment above it is yours and I haven't touched it.
-
-There are only **three** left: one paragraph on About, the four "How I work"
-habits, and the case study ledes. The homepage, the work index, and every case
-study body are entirely your own words.
-
-(The marker is deliberately terse rather than saying "placeholder": these comments
-are visible to anyone who views the page source.)
-
-### Where the copy came from
-
-| Source | Used for |
-|--------|----------|
-| Your Figma Slides deck | Every case study body, verbatim — challenges, rationale, role, impact, metrics |
-| Your LinkedIn About | The positioning line on the homepage, and the About page headline |
-| Your LinkedIn Experience | The Experience and Education timelines on About |
-| Your LinkedIn recommendations | The three quotes on About and the featured one on the homepage |
-| Written by me, marked | Case study ledes, one About paragraph, "How I work" |
-
-The recommendation quotes each end on a complete sentence, with an ellipsis where
-the original continues — nothing is paraphrased, and nothing is stitched together
-from separate parts. They link back to your LinkedIn so anyone can check.
+then follow the DNS steps in `GITHUB-SETUP.md`.
 
 ---
 
