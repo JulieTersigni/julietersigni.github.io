@@ -471,16 +471,23 @@ button { font: inherit; color: inherit; }
   align-items: baseline;
   padding: clamp(1.6rem, 3.5vw, 2.6rem) 0;
   text-decoration: none;
-  transition: padding-inline 0.3s var(--ease);
 }
-.work-link:hover { padding-inline: 0.75rem; }
 
-/* Coming-soon entries are divs, not links — no hover shift, and the title is
-   not underlined on hover, so nothing implies a destination. */
+/* Hover must not change the row's usable width. An earlier version added
+   padding-inline on hover, which narrowed the title column just enough that a
+   long title re-wrapped onto a second line — the row grew taller and every row
+   below it jumped. Underline only: text-decoration never affects layout.
+   Focus gets the same cue so keyboard users aren't left guessing. */
+.work-link:hover .work-title,
+.work-link:focus-visible .work-title {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 6px;
+}
+
+/* Coming-soon entries are divs, not links, so nothing implies a destination. */
 .work-link--pending { cursor: default; }
-.work-link--pending:hover { padding-inline: 0; }
 .work-link--pending .work-title { color: var(--ink-soft); }
-.work-link:hover .work-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
 
 .work-num {
   font-family: var(--font-display);
