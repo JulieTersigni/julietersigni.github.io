@@ -5,7 +5,7 @@ framework, no build tooling, no dependencies to keep up with. Two Node scripts d
 the encryption and verify it worked; everything else is plain HTML, CSS, and
 JavaScript you can edit in any text editor.
 
-**Live:** `https://<username>.github.io` *(free GitHub Pages — see `GITHUB-SETUP.md`)*
+**Live:** https://julietersigni.github.io *(free GitHub Pages — see `GITHUB-SETUP.md`)*
 
 ---
 
