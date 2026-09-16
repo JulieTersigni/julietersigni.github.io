@@ -96,15 +96,6 @@
   }
 
   /* ------------------------------------------------------------------------
-     Marquee — duplicate the track so the -50% translate loops seamlessly
-     ------------------------------------------------------------------------ */
-  var track = document.getElementById('stripTrack');
-  if (track && track.children.length) {
-    track.setAttribute('aria-hidden', 'true');
-    track.innerHTML += track.innerHTML;
-  }
-
-  /* ------------------------------------------------------------------------
      Résumé button state
      --------------------------------------------------------------------------
      tools/build.mjs writes assets/resume-data.js declaring whether a PDF is

@@ -404,36 +404,32 @@ button { font: inherit; color: inherit; }
 }
 
 /* --------------------------------------------------------------------------
-   6. Marquee strip — the disciplines, set as a rule of caps
+   6. Expertise strip
+   --------------------------------------------------------------------------
+   Was a looping marquee. Julie asked for each term shown once, so it is now a
+   static wrapping row — which also removes the duplicated-list artifact, the
+   reduced-motion exception, and the JS that cloned the track.
    -------------------------------------------------------------------------- */
 .strip {
-  padding: 1.5rem 0;
+  padding: 1.15rem 0;
   border-bottom: 1px solid var(--rule);
-  overflow: hidden;
 }
+
 .strip-track {
   display: flex;
-  gap: 2.5rem;
-  white-space: nowrap;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 1.5rem;
+  list-style: none;
   font-family: var(--font-display);
-  font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-mute);
-  animation: marquee 42s linear infinite;
 }
-.strip:hover .strip-track { animation-play-state: paused; }
-.strip-track span { display: inline-flex; gap: 2.5rem; }
-.strip-track span::after { content: "◦"; color: var(--rule); }
-@keyframes marquee {
-  from { transform: translateX(0); }
-  /* Half a gap past -50%: the duplicated track has 2N-1 gaps, not 2N, so a bare
-     -50% lands short and the strip visibly snaps back each cycle. */
-  to   { transform: translateX(calc(-50% - 1.25rem)); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .strip-track { animation: none; }
-}
+
+.strip-track li { display: flex; align-items: baseline; gap: 1.5rem; }
+.strip-track li:not(:last-child)::after { content: "\25E6"; color: var(--rule); }
 
 /* --------------------------------------------------------------------------
    7. Section furniture
@@ -478,6 +474,12 @@ button { font: inherit; color: inherit; }
   transition: padding-inline 0.3s var(--ease);
 }
 .work-link:hover { padding-inline: 0.75rem; }
+
+/* Coming-soon entries are divs, not links — no hover shift, and the title is
+   not underlined on hover, so nothing implies a destination. */
+.work-link--pending { cursor: default; }
+.work-link--pending:hover { padding-inline: 0; }
+.work-link--pending .work-title { color: var(--ink-soft); }
 .work-link:hover .work-title { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px; }
 
 .work-num {

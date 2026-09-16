@@ -94,7 +94,14 @@
   /* ---------------------------------------------------------------------- */
   function unlock(password, isAuto) {
     if (!supported()) {
-      setError('This browser can’t decrypt the case study. Please use a current version of Safari, Chrome, Firefox, or Edge over https.');
+      /* Distinguish the two very different causes. Browsers only expose
+         crypto.subtle on a secure origin, and Safari does not treat file:// as
+         one — so a local preview fails here while the live https site works.
+         Reporting that as "use a current browser" sends people down a dead end. */
+      var insecure = (window.isSecureContext === false) || location.protocol === 'file:';
+      setError(insecure
+        ? 'This copy is open as a local file, and browsers block decryption there. Open the live site over https, or use Chrome if you are previewing locally.'
+        : 'This browser can’t decrypt the case study. Please use a current version of Safari, Chrome, Firefox, or Edge.');
       return Promise.resolve(false);
     }
 
@@ -124,7 +131,9 @@
         try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
         return false;
       }
-      setError('That password isn’t right. Request access below and I’ll send it over.');
+      /* A stale value filled in by the browser's password manager is the most
+         common cause of "it worked before and now it doesn't", so name it. */
+      setError('That password isn’t right. If your browser filled it in automatically, clear the field and type it by hand — or request access below.');
       var card = gate.querySelector('.gate-card');
       if (card) {
         card.classList.remove('gate-shake');

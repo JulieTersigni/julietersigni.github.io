@@ -33,12 +33,15 @@ const PBKDF2_ITERATIONS = 250000;
    It matches the numbering on work.html — keep the two in step.
    -------------------------------------------------------------------------- */
 const CASE_STUDIES = [
-  { slug: 'creator-connections',  number: '01', title: 'Creator Connections' },
-  { slug: 'ads-agent',            number: '02', title: 'Ads Agent' },
   { slug: 'prime-video',          number: '03', title: 'Prime Video Interactive Ad Experiences' },
   { slug: 'brand-store-quality',  number: '04', title: 'Brand Store Quality Rating' },
   { slug: 'click-to-pay',         number: '05', title: 'Click to Pay Error Messaging' },
 ];
+
+/* Creator Connections (01) and Ads Agent (02) are listed on work.html as
+   coming-soon entries with no link. They deliberately have no page here: Julie
+   asked that unfinished work not be presented as a live page. Add them back to
+   this array when her content arrives. */
 
 /* --------------------------------------------------------------------------
    Password
@@ -206,7 +209,7 @@ function buildNav(index) {
     ? `<a class="cs-nav-link cs-nav-link--next" href="${next.slug}.html">${next.title} ${arrowRight}</a>`
     : `<a class="cs-nav-link cs-nav-link--next" href="../contact.html">Get in touch ${arrowRight}</a>`;
 
-  const count = String(CASE_STUDIES.length).padStart(2, '0');
+  const count = '05';   // she is presenting five projects; three are readable today
   return `${left}\n      <span class="cs-nav-meta">Case study ${CASE_STUDIES[index].number} of ${count}</span>\n      ${right}`;
 }
 

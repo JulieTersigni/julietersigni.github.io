@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Contact — Julie Tersigni</title>
-<meta name="description" content="Get in touch with Julie Tersigni, content design leader. Résumé download and case study access requests.">
+<meta name="description" content="Get in touch with Julie Tersigni about Staff and Principal content design roles, case study access, or a résumé.">
 <link rel="canonical" href="https://julietersigni.github.io/contact.html">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Contact — Julie Tersigni">
-<meta property="og:description" content="Get in touch with Julie Tersigni, content design leader. Résumé and case study access.">
+<meta property="og:description" content="Get in touch with Julie Tersigni about Staff and Principal content design roles, case study access, or a résumé.">
 <meta property="og:url" content="https://julietersigni.github.io/contact.html">
 <meta property="og:image" content="https://julietersigni.github.io/assets/img/julie-tersigni.jpg">
 <meta name="twitter:card" content="summary_large_image">
@@ -22,8 +22,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Staatliches&family=Work+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="main.css">
 <noscript>
-  <!-- Scroll-reveal starts at opacity:0 and is un-hidden by main.js. With no
-       JavaScript that would leave the pages blank, so undo it here. -->
   <style>.reveal { opacity: 1 !important; transform: none !important; }</style>
 </noscript>
 
@@ -43,7 +41,7 @@
 
 <nav class="site-nav" id="siteNav">
   <div class="nav-inner">
-    <a class="wordmark" href="index.html">Julie Tersigni<span>,</span></a>
+    <a class="wordmark" href="index.html">Julie Tersigni</a>
 
     <button class="nav-toggle" id="navToggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
       <svg class="icon-menu" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
@@ -51,10 +49,10 @@
     </button>
 
     <ul class="nav-links" id="navLinks">
-      <li><a href="index.html">Home</a></li>
       <li><a href="work.html">Work</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html" aria-current="page">Contact</a></li>
+      <li><a href="https://www.linkedin.com/in/julietersigni/" rel="noopener">LinkedIn</a></li>
     </ul>
 
     <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch to dark mode">
@@ -74,11 +72,15 @@
   <header class="hero">
     <div class="container">
       <p class="eyebrow">Contact</p>
-      <h1 class="display" style="font-size:var(--step-4);max-width:20ch">Let’s talk</h1>
+      <h1 class="display" style="font-size:var(--step-4);max-width:16ch">Let’s talk</h1>
       <p class="hero-lede" style="margin-top:clamp(1.5rem,3vw,2.25rem)">
-        I’m open to senior and staff-level content design roles. If you’d like the case
-        study password, a résumé, or just want to compare notes on content systems,
-        email is the fastest way to reach me.
+        I’m exploring hands-on Staff and Principal content design roles, especially in AI,
+        marketplaces, platforms, commerce, and other complex product areas. I’m looking for
+        work where I can help shape the product and stay close to the writing.
+      </p>
+      <p class="hero-lede" style="margin-top:1rem">
+        For case study access, a résumé, or a conversation about a role, email is the fastest
+        way to reach me.
       </p>
     </div>
   </header>
@@ -89,23 +91,20 @@
 
         <div class="contact-card reveal">
           <h2>Email</h2>
-          <!-- jt:copy-slot -->
-          <p><a class="link" href="mailto:your-email@example.com">your-email@example.com</a></p>
-          <p class="note">Usually the same day.</p>
+          <p><a class="link" href="mailto:julieann.tersigni@gmail.com">julieann.tersigni@gmail.com</a></p>
         </div>
 
         <div class="contact-card reveal">
           <h2>LinkedIn</h2>
-          <p><a class="link" href="https://www.linkedin.com/in/julietersigni/" rel="noopener">/in/julietersigni</a></p>
-          <p class="note">Happy to connect.</p>
+          <p><a class="link" href="https://www.linkedin.com/in/julietersigni/" rel="noopener">linkedin.com/in/julietersigni</a></p>
         </div>
 
         <div class="contact-card reveal">
           <h2>Case study access</h2>
           <p style="font-size:var(--step-0)">
-            <a class="link" href="mailto:your-email@example.com?subject=Case%20study%20access%20request">Request the password</a>
+            <a class="link" href="mailto:julieann.tersigni@gmail.com?subject=Case%20study%20access%20request">Request the password</a>
           </p>
-          <p class="note">One password opens all five.</p>
+          <p class="note">One password opens every completed case study.</p>
         </div>
 
       </div>
@@ -123,17 +122,14 @@
       </div>
 
       <div class="prose reveal">
-        <p>
-          A one-page summary of roles, scope, and shipped work. The download button
-          saves the file directly rather than opening it in a browser preview.
-        </p>
+        <p>A concise overview of my roles, scope, and impact.</p>
       </div>
 
       <div class="hero-actions reveal">
         <!--
-          The button's state is set by main.js from assets/resume-data.js, which
-          tools/build.mjs generates. Drop the PDF into assets/, rerun the build, and
-          this enables itself — no HTML editing needed.
+          State is set by main.js from assets/resume-data.js, which tools/build.mjs
+          generates. Drop the PDF into assets/, rerun the build, and the button
+          replaces the note below. No HTML edit needed.
         -->
         <a class="btn" id="resumeBtn" href="assets/Julie-Tersigni-Resume.pdf"
            data-download="Julie-Tersigni-Resume.pdf" hidden>
@@ -144,8 +140,9 @@
         </a>
 
         <p class="note" id="resumePending" style="margin:0;align-self:center;color:var(--ink-mute);font-size:var(--step--1)">
-          The PDF is being finalized — <a class="link" href="mailto:your-email@example.com?subject=R%C3%A9sum%C3%A9%20request">email me</a>
-          and I’ll send it straight over.
+          The PDF is being finalized.
+          <a class="link" href="mailto:julieann.tersigni@gmail.com?subject=R%C3%A9sum%C3%A9%20request">Email me</a>
+          and I’ll send the current version.
         </p>
       </div>
     </div>
@@ -153,11 +150,10 @@
 
   <section class="band">
     <div class="container">
-      <p class="eyebrow">Selected work</p>
-      <p class="band-quote display">Five case studies, one password.</p>
+      <h2 class="band-quote display">Selected work</h2>
       <p class="band-note">
-        Streaming ad feedback, interactive ad formats for live sport, advertiser quality
-        tooling, and regulated checkout messaging.
+        Case studies in conversational AI, streaming, advertiser and creator tools, and
+        global payments.
       </p>
       <a class="btn" href="work.html">See the work</a>
     </div>
