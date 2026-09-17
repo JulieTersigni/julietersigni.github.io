@@ -96,10 +96,17 @@ const publicText = flat(
 
 const ALL_CANARIES = new Set();
 
+/* Block-level tags become line breaks so each <li>/<p> is its own candidate.
+   Splitting on terminal punctuation alone is not enough: list items mostly don't end
+   in a period, so a whole <ul> collapsed into one giant composite string. A leak of
+   any single bullet is a strict substring of that blob and would never match. Inline
+   tags still become spaces, so a <strong> mid-sentence doesn't split the sentence. */
+const BLOCK_TAG = /<\/?(?:p|li|h[1-6]|div|section|article|figcaption|blockquote|dt|dd|ul|ol|tr|t[dh]|br)\b[^>]*>/gi;
+
 function canariesFrom(plaintext) {
-  const prose = flat(plaintext.replace(/<[^>]+>/g, ' '));
+  const prose = plaintext.replace(BLOCK_TAG, '\n').replace(/<[^>]+>/g, ' ');
   const sentences = prose
-    .split(/(?<=[.?!])\s+/)
+    .split(/\n+|(?<=[.?!])\s+/)
     .map(flat)
     // Long enough to be body copy rather than a heading or a label. Titles are
     // legitimately public in the gate markup, so they must not be canaries.
@@ -221,6 +228,7 @@ async function main() {
      would be committed. Writing it into a README "for reference" undoes the whole
      scheme, and is an easy mistake to make. */
   const SKIP = /(^|\/)(\.git|node_modules|src|dist)(\/|$)|\.password$|\.DS_Store$/;
+  const BINARY = /\.(pdf|jpe?g|png|gif|webp|avif|ico|svgz|zip|gz|woff2?|[to]tf|eot|mp[34]|mov|webm|docx?|xlsx?|pptx?)$/i;
 
   /* Ask git what it would actually commit, so a .gitignore entry genuinely takes a
      file out of scope. A plain directory walk cannot tell "ignored" from "about to
@@ -252,9 +260,14 @@ async function main() {
   const exposed = [];
   const prose = [];
   for (const file of await scan()) {
-    if (!/\.(md|html?|css|m?js|py|json|txt|xml|ya?ml)$/i.test(file)) continue;
+    /* Skip only what is genuinely binary, then let the NUL sniff below decide.
+       An extension whitelist silently exempts extensionless files (NOTES, Makefile)
+       and anything unanticipated — a .sh helper, a .swift snippet — which is the
+       natural home for a future accidental paste. */
+    if (BINARY.test(file)) continue;
     let body;
     try { body = await readFile(file, 'utf8'); } catch { continue; }
+    if (body.includes('\u0000')) continue; // binary despite the extension
     if (body.includes(password)) exposed.push(relative(ROOT, file));
 
     /* Encrypting the case-study pages achieves nothing if the same sentences sit in
@@ -264,10 +277,17 @@ async function main() {
     /* Prose pasted into source code gets broken across string-literal boundaries
        ("…rating, then " "wrote…"), which defeats a literal match. Dropping straight
        quotes and backslashes stitches it back together. Curly apostrophes, which is
-       what the copy actually uses, are left alone. */
-    const codeFlat = (t) => flat(t.replace(/<[^>]+>/g, ' ').replace(/["'\\]/g, ''));
-    const flatBody = codeFlat(body);
-    const hits = [...ALL_CANARIES].filter((c) => flatBody.includes(codeFlat(c)));
+       what the copy actually uses, are left alone.
+
+       Tag stripping is applied to markup ONLY. `<[^>]+>` is not a tag matcher over
+       source code: `[^>]` spans newlines, so a bare `i < n` comparison swallows
+       everything up to the next `>` — an arrow function 20 lines later. That silently
+       blanked a 1,474-character span of build.mjs, taking any prose in it with it. */
+    const isMarkup = /\.html?$/i.test(file);
+    const norm = (t, markup) =>
+      flat((markup ? t.replace(/<[^>]+>/g, ' ') : t).replace(/["'\\]/g, ''));
+    const flatBody = norm(body, isMarkup);
+    const hits = [...ALL_CANARIES].filter((c) => flatBody.includes(norm(c, false)));
     if (hits.length) prose.push(`${relative(ROOT, file)} (${hits.length})`);
   }
   check(
