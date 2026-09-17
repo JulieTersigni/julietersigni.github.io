@@ -40,3 +40,8 @@ dist.zip
 .vscode/
 .idea/
 *.swp
+
+# One-off migration script for Julie's punch list. Already applied, and it embeds
+# verbatim confidential case-study copy (before and after), so it must not be
+# committed to a public repo. Kept on disk as a record of what was changed.
+tools/apply_punchlist.py

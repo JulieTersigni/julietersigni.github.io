@@ -12,10 +12,11 @@
    ========================================================================== */
 
 import { readFile, readdir } from 'node:fs/promises';
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve, relative } from 'node:path';
 import { webcrypto as crypto } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '..');
@@ -67,19 +68,49 @@ function extractPayload(html) {
 }
 
 /* --------------------------------------------------------------------------
-   Distinctive phrases that must NEVER appear in a published file.
-   Drawn from the plaintext sources — one per case study.
+   Leak canaries
+   --------------------------------------------------------------------------
+   These used to be a hand-written list of phrases. That rots: rewording the copy
+   silently orphans a canary, and the check then passes because the phrase no
+   longer exists anywhere — false assurance exactly when the content changed.
+   Four of eight had died that way.
+
+   Instead, derive them from the text we just decrypted. The canaries are then, by
+   construction, always the current content, and `derived N canaries` below fails
+   loudly if we ever end up checking nothing.
+
+   Comparison is whitespace-normalised, because a leak would reproduce the
+   source's line wrapping — a literal match against a phrase that spans two lines
+   could never fire.
    -------------------------------------------------------------------------- */
-const SECRETS = [
-  'capture viewer sentiment during ads',
-  'thumbs up/thumbs down interaction within existing player controls',
-  'non-endemic advertisers',
-  'dwell time as the primary metric',
-  'low and medium-quality stores moved to high quality',
-  'vague, impersonal error messaging',
-  'Check the 3-digit code on the back of your card',
-  'Raghavendra Peri',
-];
+const flat = (s) => s.replace(/\s+/g, ' ').trim();
+
+// Text Julie publishes herself (ledes, card summaries) is not a secret, so it must
+// not become a canary — otherwise the repo-wide scan below flags her own homepage.
+const PUBLIC_PAGES = ['index.html', 'work.html', 'about.html', 'contact.html'];
+const publicText = flat(
+  PUBLIC_PAGES.map((p) => {
+    try { return readFileSync(join(ROOT, p), 'utf8'); } catch { return ''; }
+  }).join(' ').replace(/<[^>]+>/g, ' ')
+);
+
+const ALL_CANARIES = new Set();
+
+function canariesFrom(plaintext) {
+  const prose = flat(plaintext.replace(/<[^>]+>/g, ' '));
+  const sentences = prose
+    .split(/(?<=[.?!])\s+/)
+    .map(flat)
+    // Long enough to be body copy rather than a heading or a label. Titles are
+    // legitimately public in the gate markup, so they must not be canaries.
+    .filter((t) => t.length >= 60 && t.split(' ').length >= 9)
+    .filter((t) => !publicText.includes(t));
+
+  // Every qualifying sentence, not a sample. A sample makes the repo-wide scan
+  // probabilistic: prose can sit in a file and simply not be one of the phrases
+  // that got picked.
+  return sentences;
+}
 
 async function main() {
   const password = await getPassword();
@@ -156,8 +187,17 @@ async function main() {
     check(trimmedOk, 'space-padded passwords still work (case-study.js trims)');
 
     // --- no plaintext in the published file --------------------------------
-    const leaks = SECRETS.filter((s) => html.includes(s));
-    check(leaks.length === 0, leaks.length ? `PLAINTEXT LEAK: ${leaks.join(' | ')}` : 'no plaintext content in published file');
+    const canaries = canariesFrom(plain);
+    canaries.forEach((c) => ALL_CANARIES.add(c));
+    check(canaries.length >= 5,
+      `derived ${canaries.length} leak canaries from the decrypted text` +
+      (canaries.length < 5 ? ' — too few to be meaningful' : ''));
+
+    const flatHtml = flat(html);
+    const leaks = canaries.filter((c) => flatHtml.includes(c));
+    check(leaks.length === 0, leaks.length
+      ? `PLAINTEXT LEAK (${leaks.length}): ${leaks.slice(0, 3).map((l) => l.slice(0, 60) + '…').join(' | ')}`
+      : 'none of that text appears in the published file');
 
     // --- no fetchable image URLs ------------------------------------------
     const imgSrcs = [...html.matchAll(/<img[^>]+src="([^"]+)"/g)].map((m) => m[1]);
@@ -181,29 +221,67 @@ async function main() {
      would be committed. Writing it into a README "for reference" undoes the whole
      scheme, and is an easy mistake to make. */
   const SKIP = /(^|\/)(\.git|node_modules|src|dist)(\/|$)|\.password$|\.DS_Store$/;
-  async function scan(dir) {
-    const out = [];
-    for (const e of await readdir(dir, { withFileTypes: true })) {
-      const full = join(dir, e.name);
-      if (SKIP.test(relative(ROOT, full))) continue;
-      if (e.isDirectory()) out.push(...(await scan(full)));
-      else out.push(full);
+
+  /* Ask git what it would actually commit, so a .gitignore entry genuinely takes a
+     file out of scope. A plain directory walk cannot tell "ignored" from "about to
+     be published", and would report a deliberately excluded file forever. */
+  async function scan() {
+    try {
+      return execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', '-z'],
+        { cwd: ROOT, encoding: 'utf8' })
+        .split('\0').filter(Boolean)
+        .filter((p) => !SKIP.test(p))
+        .map((p) => join(ROOT, p));
+    } catch {
+      // Not a git checkout (a client working from the zip). Fall back to a walk,
+      // which is stricter: it can only over-report.
+      const walk = async (dir) => {
+        const out = [];
+        for (const e of await readdir(dir, { withFileTypes: true })) {
+          const full = join(dir, e.name);
+          if (SKIP.test(relative(ROOT, full))) continue;
+          if (e.isDirectory()) out.push(...(await walk(full)));
+          else out.push(full);
+        }
+        return out;
+      };
+      return walk(ROOT);
     }
-    return out;
   }
 
   const exposed = [];
-  for (const file of await scan(ROOT)) {
-    if (!/\.(md|html?|css|m?js|json|txt|xml|ya?ml)$/i.test(file)) continue;
+  const prose = [];
+  for (const file of await scan()) {
+    if (!/\.(md|html?|css|m?js|py|json|txt|xml|ya?ml)$/i.test(file)) continue;
     let body;
     try { body = await readFile(file, 'utf8'); } catch { continue; }
     if (body.includes(password)) exposed.push(relative(ROOT, file));
+
+    /* Encrypting the case-study pages achieves nothing if the same sentences sit in
+       plaintext in a build script or a note elsewhere in the repo. A punch-list
+       script did exactly that, so this scans every committable file — not just the
+       pages we encrypt. */
+    /* Prose pasted into source code gets broken across string-literal boundaries
+       ("…rating, then " "wrote…"), which defeats a literal match. Dropping straight
+       quotes and backslashes stitches it back together. Curly apostrophes, which is
+       what the copy actually uses, are left alone. */
+    const codeFlat = (t) => flat(t.replace(/<[^>]+>/g, ' ').replace(/["'\\]/g, ''));
+    const flatBody = codeFlat(body);
+    const hits = [...ALL_CANARIES].filter((c) => flatBody.includes(codeFlat(c)));
+    if (hits.length) prose.push(`${relative(ROOT, file)} (${hits.length})`);
   }
   check(
     exposed.length === 0,
     exposed.length
       ? `PASSWORD LEAK — it appears in: ${exposed.join(', ')}`
       : 'the password appears in no committed file'
+  );
+
+  check(
+    prose.length === 0,
+    prose.length
+      ? `CASE-STUDY PLAINTEXT LEAK — confidential copy appears in: ${prose.join(', ')}`
+      : `no case-study prose in any committed file (${ALL_CANARIES.size} phrases checked)`
   );
 
   console.log(
