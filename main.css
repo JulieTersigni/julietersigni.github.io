@@ -462,6 +462,16 @@ button { font: inherit; color: inherit; }
   }
 }
 
+@media (min-width: 64rem) {
+  /* Justify the row: first term flush left, last flush right, the leftover width shared
+     equally between the terms rather than pooling on the right. `column-gap` above acts as
+     the minimum, so the ~9% headroom the sizing leaves over is spread across the six gaps —
+     roughly 1.6rem + 15px each, which lands close to the old 2.25rem rhythm. Scoped to the
+     one-line band deliberately: on a wrapped row, space-between would fling the last line's
+     two or three terms across the full width. */
+  .strip-track { justify-content: space-between; }
+}
+
 /* --------------------------------------------------------------------------
    7. Section furniture
    -------------------------------------------------------------------------- */
