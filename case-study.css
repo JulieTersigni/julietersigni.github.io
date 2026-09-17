@@ -247,8 +247,11 @@
 }
 
 .cs-prose { max-width: var(--measure); }
+/* :where() keeps the reset at zero specificity. Written plainly, `.cs-prose p` (0,1,1)
+   out-ranks the flow rule below (0,1,0) and collapses every paragraph gap in the case
+   study body. Same bug existed in main.css for the public pages. */
+.cs-prose :where(p, ul, ol, figure, blockquote) { margin: 0; }
 .cs-prose > * + * { margin-top: 1.1em; }
-.cs-prose p { margin: 0; }
 .cs-emph {
   font-size: var(--step-2);
   font-weight: 300;

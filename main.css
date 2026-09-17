@@ -433,6 +433,28 @@ button { font: inherit; color: inherit; }
    can't be fixed by exempting a particular term. The gap carries the separation. */
 .strip-track li { display: flex; align-items: baseline; }
 
+/* Seven terms are about 100px too wide for one line at every desktop width, so the row
+   wrapped with "Research" stranded on its own. Shrinking the type to fit only holds on the
+   widest windows, so the break is placed deliberately instead: 3 + 4, which lands two lines
+   of near-equal length. Below 46rem there is no room for three terms and the natural wrap
+   takes over. Specificity has to beat `.strip-track li` above, hence the two-class selector. */
+.strip-track .strip-break { display: none; }
+
+@media (min-width: 46rem) {
+  /* The spacer is a flex line of its own, so the 0.4rem row-gap lands twice — once above
+     it and once below — and the two term lines would sit twice as far apart as a natural
+     wrap. Halve the row gap while the spacer is doing the wrapping. Above this breakpoint
+     three terms always fit on one line, so these are the only two lines. */
+  .strip-track { row-gap: 0.2rem; }
+
+  .strip-track .strip-break {
+    display: block;
+    flex-basis: 100%;
+    height: 0;
+    margin: 0;
+  }
+}
+
 /* --------------------------------------------------------------------------
    7. Section furniture
    -------------------------------------------------------------------------- */
@@ -613,8 +635,12 @@ button { font: inherit; color: inherit; }
    11. Prose — About page and long-form public copy
    -------------------------------------------------------------------------- */
 .prose { max-width: var(--measure); }
+/* Reset the browser's margins, then reinstate the spacing between siblings. The reset is
+   wrapped in :where() so it carries no specificity: as a plain `.prose p` (0,1,1) it
+   out-ranked the flow rule below (0,1,0) and silently collapsed every paragraph gap, which
+   ran the lede straight into the next paragraph. */
+.prose :where(p, ul, ol, dl, figure, blockquote) { margin: 0; }
 .prose > * + * { margin-top: 1.15em; }
-.prose p { margin: 0; }
 .prose h2 {
   margin-top: 2.4em;
   font-size: var(--step-2);
