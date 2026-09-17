@@ -419,10 +419,16 @@ button { font: inherit; color: inherit; }
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.4rem 2.25rem;   /* wider now that no dot separates the terms */
+  /* Sized so all seven terms sit on one line, which is what Julie asked for. The binding
+     case is a wide window: the container stops growing at 1240px while a vw-based font
+     keeps growing, so the widest screen is the tightest fit, not the roomiest. At the cap
+     the row needs ~1020px of the ~1112px available — about 9% headroom, held across every
+     width down to the 64rem breakpoint below. The old 1.35rem/2.25rem pair needed ~1216px
+     and could not fit at any desktop width. */
+  gap: 0.4rem 1.6rem;
   list-style: none;
   font-family: var(--font-display);
-  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-size: clamp(0.92rem, 1.1vw, 1.15rem);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-mute);
@@ -433,18 +439,19 @@ button { font: inherit; color: inherit; }
    can't be fixed by exempting a particular term. The gap carries the separation. */
 .strip-track li { display: flex; align-items: baseline; }
 
-/* Seven terms are about 100px too wide for one line at every desktop width, so the row
-   wrapped with "Research" stranded on its own. Shrinking the type to fit only holds on the
-   widest windows, so the break is placed deliberately instead: 3 + 4, which lands two lines
-   of near-equal length. Below 46rem there is no room for three terms and the natural wrap
-   takes over. Specificity has to beat `.strip-track li` above, hence the two-class selector. */
+/* Below 64rem one line is physically impossible — the seven terms are wider than the
+   viewport even at the minimum font size — and the natural wrap strands "Research" alone
+   on line two. So in that band only, this spacer forces the break after the third term,
+   splitting the row 3 + 4 into two lines of near-equal length. Narrower than 40rem, three
+   terms no longer fit either and the natural wrap does a better job unaided.
+   Specificity has to beat `.strip-track li` above, hence the two-class selector. */
 .strip-track .strip-break { display: none; }
 
-@media (min-width: 46rem) {
+@media (min-width: 40rem) and (max-width: 63.999rem) {
   /* The spacer is a flex line of its own, so the 0.4rem row-gap lands twice — once above
      it and once below — and the two term lines would sit twice as far apart as a natural
-     wrap. Halve the row gap while the spacer is doing the wrapping. Above this breakpoint
-     three terms always fit on one line, so these are the only two lines. */
+     wrap. Halve the row gap while the spacer is doing the wrapping. In this band those are
+     provably the only two lines: three terms fit, and so do the remaining four. */
   .strip-track { row-gap: 0.2rem; }
 
   .strip-track .strip-break {
